@@ -2,29 +2,38 @@ package br.ueg.eventos.domain.model;
 
 import br.ueg.eventos.domain.exception.DomainRuleException;
 import java.util.Collections;
-import java.util.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.ZonedDateTime;
 
 public class Evento {
   private final String id;
   private String titulo;
-  private LocalDateTime dataInicio;
-  private LocalDateTime dataFim;
+  private String Descricao;
+  private String local;
+  private ZonedDateTime dataInicio;
+  private ZonedDateTime dataFim;
   private StatusEvento situacao;
   private List<Atividade> atividades;
 
 
-  protected Evento(String id, LocalDateTime dataInicio, LocalDateTime dataFim, String titulo) {
-    if (id == null || id.isBlank()) {
+  protected Evento(String id, String titulo, LocalDateTime dataInicio, LocalDateTime dataFim) {
+    if (textOuVazio(id)) {
       throw new DomainRuleException("Id da entidade não pode ser nulo ou vazio.");
     }
-    if (titulo == null || titulo.isBlank()) {
+    
+    if (textOuVazio(titulo)) {
       throw new DomainRuleException("O título do evento é obrigatório.");
     }
-    if (dataInicio != null && dataFim != null && dataFim.isBefore(dataInicio)) {
+
+    if (dataFim == null || dataInicio == null) {
+      throw new DomainRuleException("As datas de iníco e término são obrigatórias!");
+    }
+    
+    if (dataFim.isBefore(dataInicio)) {
       throw new DomainRuleException("A data de término não pode ser anterior à data de início.");
     }
+    
     this.id = id;
     this.titulo = titulo;
     this.dataInicio = dataInicio;
@@ -49,6 +58,10 @@ public class Evento {
       throw new DomainRuleException("Não é possível adicionar atividades em um evento encerrado.");
     }
     this.atividades.add(novaAtividade);
+  }
+
+  public Boolean textOuVazio(String text) {
+    return text == null || text.isblanck();
   }
 }
 
