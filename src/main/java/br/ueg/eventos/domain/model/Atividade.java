@@ -97,8 +97,8 @@ public class Atividade {
         return local;
     }
 
-    protected String textOuVazio(String valor) {
-        return(valor == null || valor.isBlank())
+    protected Boolean textOuVazio(String valor) {
+        return valor == null || valor.isBlank()
     }
 
 }
