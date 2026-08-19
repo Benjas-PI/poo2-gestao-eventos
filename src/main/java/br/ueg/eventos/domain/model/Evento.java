@@ -10,6 +10,8 @@ public class Evento {
   private final String id;
   private String titulo;
   private String descricao;
+  private TipoEvento tipo;
+  private ModalidadeEvento modalidade;
   private String local;
   private ZonedDateTime dataInicio;
   private ZonedDateTime dataFim;
@@ -17,7 +19,7 @@ public class Evento {
   private List<Atividade> atividades;
 
 
-  protected Evento(String id, String titulo, LocalDateTime dataInicio, LocalDateTime dataFim) {
+  protected Evento(String id, String titulo, String descricao, TipoEvento tipo, ModalidadeEvento modalidade, String local, ZonedDateTime dataInicio, ZonedDateTime dataFim) {
     if (textOuVazio(id)) {
       throw new DomainRuleException("Id da entidade não pode ser nulo ou vazio.");
     }
@@ -28,6 +30,14 @@ public class Evento {
 
     if(textOuVazio(descricao)) {
       throw new DomainRuleException("O Evento precisa ter uma descrição!");
+    }
+
+    if(tipo == null) {
+      throw new DomainRuleException("A categoria do Evento precisa ser definia!.");
+    }
+
+    if(modalidade == null) {
+      throw new DomainRuleException("A modalidade do Evento precisa ser selecionada!.");
     }
 
     if(textOuVazio(local)) {
@@ -45,6 +55,8 @@ public class Evento {
     this.id = id;
     this.titulo = titulo;
     this.descricao = descricao;
+    this.tipo = tipo;
+    this.modalidade = modalidade;
     this.local = local;
     this.dataInicio = dataInicio;
     this.dataFim = dataFim;
@@ -52,14 +64,31 @@ public class Evento {
     this.atividades = new ArrayList<>();
   }
 
-  public static Evento criarNovo(String id, String titulo, String descricao, String local, ZonedDateTime inicio, ZonedDateTime fim) {
-    return new Evento(id, titulo, descricao, inicio, fim);
+  public static Evento criarNovo(String id, String titulo, String descricao, TipoEvento tipo, ModalidadeEvento modalidade, String local, ZonedDateTime inicio, ZonedDateTime fim) {
+    return new Evento(id, titulo, descricao, tipo, modalidade, local, inicio, fim);
   }
 
-  public List<Atividade> getAtividades() {
-    return Collections.listaAtividades(this.atividades);
+
+  //===================================Validações do Status do Evento=====================
+  public void publicar() {
+    if (this.situacao == StatusEvento.ENCERRADO || this.situacao == StatusEvento.CANCELADO) {
+      throw new DomainRuleException("O evento foi cancelado ou já se encerrou, não é possível publicar.");
+    }
+    this.situacao = StatusEvento.PUBLICADO;
   }
 
+  public void encerrar() {
+    if (this.situacao == StatusEvento.CANCELADO) {
+      throw new DomainRuleException("O evento já foi cancelado, não é possível encerrar.");
+    }
+    this.situacao = StatusEvento.ENCERRADO;
+  }
+
+  public void cancelar() {
+      this.situacao = StatusEvento.CANCELADO;
+  }
+  //=======================================================================================
+  
   public void adicionarAtividade(Atividade novaAtividade) {
     if (novaAtividade == null) {
       throw new DomainRuleException("A atividade não pode ser nula.");
@@ -70,10 +99,16 @@ public class Evento {
     if (novaAtividade.getDataInicio().isBefore(this.dataInicio) || novaAtividade.getDataFim().isAfter(this.dataFim)) {
       throw new DomainRuleException("O horário da atividade precisa estar dentro do período do evento.");
     }
-    if (Atividade atual : atividades){
-      throw new DomainRuleException("Outra atividade já está agendada nesse local e horário");
+    for (Atividade atual : atividades){
+      if(atual.conflitaCom(novaAtividade)){
+        throw new DomainRuleException("Outra atividade já está agendada nesse local e horário");
+      }
     }
     this.atividades.add(novaAtividade);
+  }
+
+  public List<Atividade> getAtividades() {
+    return Collections.unmodifiableList(this.atividades);
   }
 
   public  String getId() {
@@ -88,22 +123,32 @@ public class Evento {
     return descricao;
   }
 
+  public TipoEvento getTipo() {
+    return tipo;
+  }
+
+  public ModalidadeEvento getModalidade() {
+    return modalidade;
+  }
+
   public String getLocal() {
     return local;
   }
 
   public ZonedDateTime getDataInicio() {
-    return DataInicio;
+    return dataInicio;
   }
+
   public ZonedDateTime getDataFim() {
-    return DataFim;
+    return dataFim;
   }
+
   public StatusEvento getSituacao() {
-    return Situacao;
+    return situacao;
   }
 
   public Boolean textOuVazio(String text) {
-    return text == null || text.isblanck();
+    return text == null || text.isBlank();
   }
 }
 
