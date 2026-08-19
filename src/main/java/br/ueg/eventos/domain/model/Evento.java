@@ -44,14 +44,16 @@ public class Evento {
     
     this.id = id;
     this.titulo = titulo;
+    this.descricao = descricao;
+    this.local = local;
     this.dataInicio = dataInicio;
     this.dataFim = dataFim;
     this.situacao = StatusEvento.RASCUNHO;
     this.atividades = new ArrayList<>();
   }
 
-  public static Evento criarNovo(String id, String titulo, LocalDateTime inicio, LocalDateTime fim) {
-    return new Evento(id, titulo, inicio, fim);
+  public static Evento criarNovo(String id, String titulo, String descricao, String local, ZonedDateTime inicio, ZonedDateTime fim) {
+    return new Evento(id, titulo, descricao, inicio, fim);
   }
 
   public List<Atividade> getAtividades() {
@@ -65,7 +67,39 @@ public class Evento {
     if (this.situacao == StatusEvento.ENCERRADO) {
       throw new DomainRuleException("Não é possível adicionar atividades em um evento encerrado.");
     }
+    if (novaAtividade.getDataInicio().isBefore(this.dataInicio) || novaAtividade.getDataFim().isAfter(this.dataFim)) {
+      throw new DomainRuleException("O horário da atividade precisa estar dentro do período do evento.");
+    }
+    if (Atividade atual : atividades){
+      throw new DomainRuleException("Outra atividade já está agendada nesse local e horário");
+    }
     this.atividades.add(novaAtividade);
+  }
+
+  public  String getId() {
+    return id;
+  }
+
+  public String getTitulo() {
+    return titulo;
+  }
+
+  public String getDescricao() {
+    return descricao;
+  }
+
+  public String getLocal() {
+    return local;
+  }
+
+  public ZonedDateTime getDataInicio() {
+    return DataInicio;
+  }
+  public ZonedDateTime getDataFim() {
+    return DataFim;
+  }
+  public StatusEvento getSituacao() {
+    return Situacao;
   }
 
   public Boolean textOuVazio(String text) {
