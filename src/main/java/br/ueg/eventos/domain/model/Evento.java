@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 public class Evento {
   private final String id;
   private String titulo;
-  private String Descricao;
+  private String descricao;
   private String local;
   private ZonedDateTime dataInicio;
   private ZonedDateTime dataFim;
@@ -24,6 +24,14 @@ public class Evento {
     
     if (textOuVazio(titulo)) {
       throw new DomainRuleException("O título do evento é obrigatório.");
+    }
+
+    if(textOuVazio(descricao)) {
+      throw new DomainRuleException("O Evento precisa ter uma descrição!");
+    }
+
+    if(textOuVazio(local)) {
+      throw new DomainRuleException("É preciso definir um local para o evento");
     }
 
     if (dataFim == null || dataInicio == null) {
