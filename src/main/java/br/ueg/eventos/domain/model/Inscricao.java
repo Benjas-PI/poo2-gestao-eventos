@@ -18,9 +18,11 @@ public class Inscricao {
   private List<Atividade> atividadesSelecionadas;
 
   protected Inscricao(String id, Usuario participante, Evento evento) {
-    if (id == null || participante == null || evento == null) {
-      throw new DomainRuleException("Dados incompletos para gerar a inscrição.");
-    }
+    Validador.avaliar(
+        new RegraTextoObrigatorio(id, "O ID da inscricao nao pode ser vazio."), 
+        new RegraObjetoNaoNulo(participante, "Um usuario precisa estar vinculado a inscricao."), 
+        new RegraObjetoNaoNulo(evento, "Um evento precisa estar vinculado a inscricao.") 
+        );
 
     this.id = id;
     this.participante = participante;
