@@ -7,14 +7,17 @@ import java.time.ZonedDateTime;
 
 public class EventoDTO {
 
-    private final String idOrganizador;
-    private final String titulo;
-    private final String descricao;
-    private final TipoEvento tipo;
-    private final ModalidadeEvento modalidade;
-    private final String endereco;
-    private final ZonedDateTime dataInicio;
-    private final ZonedDateTime dataFim;
+    private String idOrganizador;
+    private String titulo;
+    private String descricao;
+    private TipoEvento tipo;
+    private ModalidadeEvento modalidade;
+    private String endereco;
+    private ZonedDateTime dataInicio;
+    private ZonedDateTime dataFim;
+
+    public EventoDTO() {
+    }
 
     public EventoDTO(
             String idOrganizador,
@@ -44,4 +47,13 @@ public class EventoDTO {
     public String getEndereco() { return endereco; }
     public ZonedDateTime getDataInicio() { return dataInicio; }
     public ZonedDateTime getDataFim() { return dataFim; }
+
+    public void setIdOrganizador(String idOrganizador) { this.idOrganizador = idOrganizador; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
+    public void setTipo(TipoEvento tipo) { this.tipo = tipo; }
+    public void setModalidade(ModalidadeEvento modalidade) { this.modalidade = modalidade; }
+    public void setEndereco(String endereco) { this.endereco = endereco; }
+    public void setDataInicio(ZonedDateTime dataInicio) { this.dataInicio = dataInicio; }
+    public void setDataFim(ZonedDateTime dataFim) { this.dataFim = dataFim; }
 }
